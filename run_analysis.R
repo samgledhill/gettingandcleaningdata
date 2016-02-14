@@ -33,8 +33,9 @@ if(!file.exists("UCI HAR Dataset")) {
       y_test <- read.table("C:/Users/sam/Dropbox/Stats/bce analysis/assignment 2/UCI HAR Dataset/test/y_test.txt", 
                            quote="\"", comment.char="")
 
-      ## First, let's appropraitely label the data.  The 561 column names of the "x" table are the features list.  We need to pull the second
-      ## column of that file and assign it to the names() attribute of the x_train and x_test dataframes.
+      ## First, let's appropraitely label the data. This is actually step 4 - but it seems to fit here better. The 561 column names 
+      ## of the "x" table are the features list.  We need to pull the second column of that file and assign it to the names() 
+      ## attribute of the x_train and x_test dataframes.
 
       names(X_test) <- features[,2]
       names(X_train) <- features[,2]
@@ -62,4 +63,16 @@ if(!file.exists("UCI HAR Dataset")) {
 
       data_sub$activity <- as.factor(data_sub$activity)
       levels(data_sub$activity) <- activity_labels[,2]
+
+## Step 5 - Remember, we covered step 4 earlier when we added labels to the dataframe in step 1!! Now we need to create a second dataframe
+## which houses the average value for the existing dataset for each activity and for each subject.  
+      
+      average_data <- tbl_df(data_sub)
+      average_data <- group_by(average_data, activity, subject)
+      new_data <- summarise_each(average_data, funs(mean))
+      
+## Write out new_data as a CSV file for upload to GitHub
+      
+      write.csv(new_data, "new_data.csv")
+      
 
