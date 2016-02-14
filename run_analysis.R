@@ -39,17 +39,27 @@ if(!file.exists("UCI HAR Dataset")) {
       names(X_test) <- features[,2]
       names(X_train) <- features[,2]
       
-      ## Now let's rbind all three training and test sets together....
+      ## Now let's rbind all three training and test sets together and while we are at it,
+      ## let's also name the y_data column "activity" and the subject_data column "subject"....
       
       x_data <- rbind(X_test, X_train)
       y_data <- rbind(y_test, y_train)
+      names(y_data) <- "activity"
       subject_data <- rbind(subject_test, subject_train)
+      names(subject_data) <- "subject"
       
       ## And finally, cbind together the x_data (details), with y_data (the activity) and subject_data (which subject did the experiment?)
       data <- cbind(x_data, y_data, subject_data)
       
 ## Step 2 - Pull out only the data columns which relate to mean() and std() of the given measures
       
+      ## We can subset the data table to only include columns with a label that contains "mean()" or "std()"
+      ## Remember to also add back in the activity and subject columns 
       
+      data_sub <- data[,c(grep("mean\\(\\)|std\\(\\)", features[,2]),562,563)]
 
+## Step 3 - Give sensible activity labels to the activity column
+
+      data_sub$activity <- as.factor(data_sub$activity)
+      levels(data_sub$activity) <- activity_labels[,2]
 
